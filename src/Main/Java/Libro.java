@@ -1,7 +1,6 @@
 package Main.Java;
 
 import Main.Utils.Utils;
-import jdk.jshell.execution.Util;
 
 import java.util.Objects;
 
@@ -38,8 +37,8 @@ public class Libro {
     }
 
     public static String nombreCompleto(Autor a) {
-        if (a == null) return "N/A"; // O un String vacío ""
-        return a.getNombre() + " " + Utils.distintoNulo(a.getApellido());
+        if (a == null) return "N/A";
+        return a.getNombre();
     }
 
     @Override

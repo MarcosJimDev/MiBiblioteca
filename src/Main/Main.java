@@ -2,6 +2,8 @@ package Main;
 
 import Main.Config.AppInfo;
 import Main.Java.*;
+import Main.Utils.Utils;
+
 import java.util.*;
 
 public class Main {
@@ -10,7 +12,7 @@ public class Main {
         HashMap<Integer, Editorial> editoriales = EditorialDAO.cargarEditoriales();
         HashMap<Integer, Libro> libros = LibroDAO.cargarLibros(autores, editoriales);
 
-        Scanner sc = new Scanner(System.in);
+        Scanner sc = Utils.declararScaner();
 
         BibliotecaUI.mostrarBienvenida(libros);
 
@@ -53,17 +55,13 @@ public class Main {
                             }
                             break;
                         case 4:
-                            //TODO
-                            System.out.println("En desarrollo.");
-                            //Libro nuevo = BibliotecaUI.pedirDatosLibroNuevo();
+                            LibroDAO.agregarNuevoLibro(libros, autores, editoriales);
                             break;
                         case 5:
-                            //TODO
-                            System.out.println("En desarrollo.");
+                            AutorDAO.agregarNuevoAutor(autores);
                             break;
                         case 6:
-                            //TODO
-                            System.out.println("En desarrollo.");
+                            EditorialDAO.agregarNuevaEditorial(editoriales);
                             break;
                         case 7:
                             //TODO
