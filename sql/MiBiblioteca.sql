@@ -28,7 +28,6 @@ CREATE TABLE libros (
     ID_Grupo_Editorial INT,
     Anyo_Lectura INT,
     Anyo_Adquisicion INT,
-    Leido BOOLEAN DEFAULT FALSE,
     PRIMARY KEY (ID),
     -- Definición de claves foráneas
     CONSTRAINT fk_autor1 FOREIGN KEY (ID_Autor1) REFERENCES autores(ID),
