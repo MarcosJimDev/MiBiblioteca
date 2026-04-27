@@ -32,6 +32,7 @@ public class AutorDAO {
     public static void agregarNuevoAutor(HashMap<Integer, Autor> autoresMap, Scanner sc) {
         System.out.println("\n--- AGREGAR NUEVO AUTOR ---");
 
+        System.out.println("Nombre completo (obligatorio): ");
         String nombre = BibliotecaUI.campoObligatorio(sc, "Nombre completo (obligatorio): ");
 
         if (nombre.equalsIgnoreCase("salir"))
@@ -75,6 +76,7 @@ public class AutorDAO {
     public static void eliminarAutor(HashMap<Integer, Autor> autoresMap, Scanner sc) {
         System.out.println("\n--- ELIMINAR AUTOR ---");
 
+        System.out.println("Introduce el nombre completo del autor: ");
         String nombreABuscar = BibliotecaUI.campoObligatorio(sc, "Introduce el nombre completo del autor: ");
 
         if (nombreABuscar.equalsIgnoreCase("salir"))

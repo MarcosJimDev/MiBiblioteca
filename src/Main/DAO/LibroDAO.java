@@ -44,10 +44,12 @@ public class LibroDAO {
     public static void agregarNuevoLibro(HashMap<Integer, Libro> librosMap, HashMap<Integer, Autor> autoresMap, HashMap<Integer, Editorial> editorialesMap, Scanner sc) {
         System.out.println("\n--- AGREGAR NUEVO LIBRO ---");
 
+        System.out.println("Título (obligatorio): ");
         String titulo = BibliotecaUI.campoObligatorio(sc, "Título (obligatorio): ");
 
         int numPaginas = BibliotecaUI.pedirEntero(sc, "Número de páginas: ");
 
+        System.out.println("Nombre Autor Principal (obligatorio): ");
         String nombreAutor1 = BibliotecaUI.campoObligatorio(sc, "Nombre Autor Principal (obligatorio): ");
         String autor1Norm = Utils.normalizar(nombreAutor1);
         Autor a1Obj = null;
@@ -90,6 +92,7 @@ public class LibroDAO {
             idAutor2Val = a2Obj.getId();
         }
 
+        System.out.println("Nombre Editorial (obligatorio): ");
         String nombreEditorial = BibliotecaUI.campoObligatorio(sc, "Nombre Editorial (obligatorio): ");
         String editorialNorm = Utils.normalizar(nombreEditorial);
         Editorial edObj = null;

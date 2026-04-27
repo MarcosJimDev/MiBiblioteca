@@ -33,6 +33,7 @@ public class EditorialDAO {
     public static void agregarNuevaEditorial(HashMap<Integer, Editorial> editorialesMap, Scanner sc) {
         System.out.println("\n--- AGREGAR NUEVA EDITORIAL ---");
 
+        System.out.println("Nombre del Grupo Editorial (obligatorio): ");
         String grupo = BibliotecaUI.campoObligatorio(sc, "Nombre del Grupo Editorial (obligatorio): ");
 
         String grupoNormInput = Utils.normalizar(grupo);
