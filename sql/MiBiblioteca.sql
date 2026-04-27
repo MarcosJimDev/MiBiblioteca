@@ -119,7 +119,7 @@ Leido) values
 ('Constitución Española', 99, 1, null, 'No ficción', 'Leyes', 2, null, 2021, false),
 ('Constitución Europea', 174, 1, null, 'No ficción', 'Leyes', 2, null, 2021, false),
 ('La Constitución explicada superfácil ¡hasta que la entienda hasta tu cuñado!', 
-176, 1, null, 'No ficción', 'Sátira', 3, null, 2021, false),
+176, 2, null, 'No ficción', 'Sátira', 3, null, 2021, false),
 ('El ingenioso hidalgo don Quijote de la Mancha', 920, 3, null, 'Narrativa',
 'Fantasía / metáfora', 4, null, 2021, false),
 ('El último trabajo del Señor Luna', 248, 4, null, 'Narrativa', 'Juvenil',
