@@ -24,6 +24,12 @@ public class Editorial {
         );
     }
 
+    public void mostrarEditorial() {
+        System.out.println("\n\tID: " + id);
+        System.out.println("\tGrupo editorial: " + grupoEditorial);
+        System.out.println("\tFirma editorial: " + firmaEditorial);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;

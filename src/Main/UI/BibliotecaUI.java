@@ -1,12 +1,17 @@
 package Main.UI;
 
+import Main.Java.Autor;
 import Main.Java.Libro;
+import Main.Java.Editorial;
+import Main.Utils.Utils;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Scanner;
 
 public class BibliotecaUI {
@@ -21,6 +26,12 @@ public class BibliotecaUI {
         System.out.println("\t7. Eliminar libro.");
         System.out.println("\t8. Eliminar autor.");
         System.out.println("\t9. Eliminar editorial.");
+        System.out.println("\t10. Buscar libro.");
+        System.out.println("\t11. Buscar autor.");
+        System.out.println("\t12. Buscar grupo editorial.");
+        System.out.println("\t13. Buscar libro por grupo editorial.");
+        System.out.println("\t14. Buscar libro por autor.");
+        System.out.println("\t15. Actualizar año de lectura (libro).");
         System.out.println("\t0. Salir del programa.");
     }
 
@@ -31,7 +42,8 @@ public class BibliotecaUI {
 
     public static String pedirCadena(Scanner sc, String mensaje) {
         System.out.print(mensaje);
-        return sc.nextLine().trim();
+        String entrada = sc.nextLine().trim();
+        return entrada;
     }
 
     public static int pedirEntero(Scanner sc, String mensaje) {
@@ -113,5 +125,129 @@ public class BibliotecaUI {
             }
         } while (cadena.equalsIgnoreCase(""));
         return cadena;
+    }
+
+    public static void buscarLibro(HashMap<Integer, Libro> libros, Scanner sc) {
+        System.out.println("Introduce el título del libro: ");
+        String busqueda = campoObligatorio(sc, "Introduce el título del libro: ");
+        if (busqueda.equalsIgnoreCase("salir")) return;
+
+        String busquedaNorm = Utils.normalizar(busqueda);
+        List<Libro> librosEncontrados = new ArrayList<>();
+
+        for (Libro l : libros.values()) {
+            if (Utils.normalizar(l.getTitulo()).contains(busquedaNorm)) {
+                librosEncontrados.add(l);
+            }
+        }
+
+        if (librosEncontrados.isEmpty()) {
+            System.err.println("ERROR: '" + busqueda + "' no coincide con ningún título.");
+        } else {
+            System.out.println("Coincidencias: " + librosEncontrados.size());
+            for (Libro l : librosEncontrados) {
+                l.mostrarLibro();
+            }
+        }
+    }
+
+    public static void buscarAutor(HashMap<Integer, Autor> autores, Scanner sc) {
+        System.out.println("Introduce el nombre del autor: ");
+        String busqueda = campoObligatorio(sc, "Introduce el nombre del autor: ");
+        if (busqueda.equalsIgnoreCase("salir")) return;
+
+        String busquedaNorm = Utils.normalizar(busqueda);
+        List<Autor> autoresEncontrados = new ArrayList<>();
+
+        for (Autor a : autores.values()) {
+            if (Utils.normalizar(a.getNombre()).contains(busquedaNorm)) {
+                autoresEncontrados.add(a);
+            }
+        }
+
+        if (autoresEncontrados.isEmpty()) {
+            System.err.println("ERROR: No se han encontrado autores que coincidan con '" + busqueda + "'.");
+        } else {
+            System.out.println("Coincidencias encontradas: " + autoresEncontrados.size());
+            for (Autor a : autoresEncontrados) {
+                a.mostrarAutor();
+            }
+        }
+    }
+
+    public static void buscarEditorial(HashMap<Integer, Editorial> editoriales, Scanner sc) {
+        System.out.println("Introduce el nombre del grupo editorial: ");
+        String busqueda = campoObligatorio(sc, "Introduce el nombre del grupo editorial: ");
+        if (busqueda.equalsIgnoreCase("salir")) return;
+
+        String busquedaNorm = Utils.normalizar(busqueda);
+        List<Editorial> editorialesEncontradas = new ArrayList<>();
+
+        for (Editorial e : editoriales.values()) {
+            if (Utils.normalizar(e.getGrupoEditorial()).contains(busquedaNorm)) {
+                editorialesEncontradas.add(e);
+            }
+        }
+
+        if (editorialesEncontradas.isEmpty()) {
+            System.err.println("ERROR: No se han encontrado editoriales con el nombre '" + busqueda + "'.");
+        } else {
+            System.out.println("Coincidencias: " + editorialesEncontradas.size());
+            for (Editorial e : editorialesEncontradas) {
+                e.mostrarEditorial();
+            }
+        }
+    }
+
+    public static void filtrarLibrosPorEditorial(HashMap<Integer, Libro> libros, Scanner sc) {
+        System.out.println("Introduce el nombre del grupo editorial: ");
+        String busqueda = campoObligatorio(sc, "Introduce el nombre del grupo editorial: ");
+        if (busqueda.equalsIgnoreCase("salir")) return;
+
+        String busquedaNorm = Utils.normalizar(busqueda);
+        List<Libro> librosEncontrados = new ArrayList<>();
+
+        for (Libro l : libros.values()) {
+            // Accedemos al grupo editorial del libro
+            if (Utils.normalizar(l.getEditorial().getGrupoEditorial()).contains(busquedaNorm)) {
+                librosEncontrados.add(l);
+            }
+        }
+
+        if (librosEncontrados.isEmpty()) {
+            System.err.println("No se han encontrado libros de la editorial: " + busqueda);
+        } else {
+            System.out.println("Libros encontrados para la editorial '" + busqueda + "': " + librosEncontrados.size());
+            for (Libro l : librosEncontrados) {
+                l.mostrarLibro();
+            }
+        }
+    }
+
+    public static void filtrarLibrosPorAutor(HashMap<Integer, Libro> libros, Scanner sc) {
+        System.out.println("Introduce el nombre del autor: ");
+        String busqueda = campoObligatorio(sc, "Introduce el nombre del autor: ");
+        if (busqueda.equalsIgnoreCase("salir")) return;
+
+        String busquedaNorm = Utils.normalizar(busqueda);
+        List<Libro> librosEncontrados = new ArrayList<>();
+
+        for (Libro l : libros.values()) {
+            boolean coincideAutor1 = Utils.normalizar(l.getAutor1().getNombre()).contains(busquedaNorm);
+            boolean coincideAutor2 = (l.getAutor2() != null) && Utils.normalizar(l.getAutor2().getNombre()).contains(busquedaNorm);
+
+            if (coincideAutor1 || coincideAutor2) {
+                librosEncontrados.add(l);
+            }
+        }
+
+        if (librosEncontrados.isEmpty()) {
+            System.err.println("No se han encontrado libros de: " + busqueda);
+        } else {
+            System.out.println("Libros encontrados de " + busqueda + ": " + librosEncontrados.size());
+            for (Libro l : librosEncontrados) {
+                l.mostrarLibro();
+            }
+        }
     }
 }

@@ -35,17 +35,17 @@ public class Main {
 
             if (opcion.equals("--version")) {
                 System.out.println(AppInfo.getFullVersion());
-            } else if (opcion.length() == 1) {
+            } else if (opcion.length() >= 1 && opcion.length() <= 2) {
                 try {
                     opcionNum = Integer.parseInt(opcion);
 
                     switch (opcionNum) {
                         case 1:
-                            System.out.println("\n" + " ".repeat(100) + "--- LISTADO DE LIBROS ---");
+                            System.out.println("\n" + " ".repeat(100) + "--- LISTADO DE " + libros.size() + " LIBROS ---");
                             // Formato idéntico al de Libro.java
-                            System.out.printf("%-3s | %-80s | %4s | %-27s | %-20s | %-15s | %-30s | %-30s | %4s | %4s | %-3s%n",
-                                    "ID", "TÍTULO", "NPAG", "AUTOR 1", "AUTOR 2", "GÉNERO", "CATEGORÍA", "EDITORIAL", "LCT", "ADQ", "L?");
-                            System.out.println("-".repeat(239)); // Línea divisoria larga
+                            System.out.printf("%-3s | %-80s | %4s | %-27s | %-20s | %-15s | %-30s | %-30s | %-8s | %4s%n",
+                                    "ID", "TÍTULO", "NPAG", "AUTOR 1", "AUTOR 2", "GÉNERO", "CATEGORÍA", "EDITORIAL", "LCT", "ADQ");
+                            System.out.println("-".repeat(248)); // Línea divisoria larga
 
                             for (Libro l : libros.values()) {
                                 l.mostrarInfoLibro();
@@ -88,6 +88,24 @@ public class Main {
                             break;
                         case 9:
                             EditorialDAO.eliminarEditorial(editoriales, sc);
+                            break;
+                        case 10:
+                            BibliotecaUI.buscarLibro(libros, sc);
+                            break;
+                        case 11:
+                            BibliotecaUI.buscarAutor(autores, sc);
+                            break;
+                        case 12:
+                            BibliotecaUI.buscarEditorial(editoriales, sc);
+                            break;
+                        case 13:
+                            BibliotecaUI.filtrarLibrosPorEditorial(libros, sc);
+                            break;
+                        case 14:
+                            BibliotecaUI.filtrarLibrosPorAutor(libros, sc);
+                            break;
+                        case 15:
+                            LibroDAO.actualizarAnyoLectura(libros, sc);
                             break;
                         case 0:
                             System.out.println("Saliendo del programa...");

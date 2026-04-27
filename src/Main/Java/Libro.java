@@ -1,7 +1,6 @@
 package Main.Java;
 
 import Main.Utils.Utils;
-
 import java.util.Objects;
 
 public class Libro {
@@ -15,9 +14,8 @@ public class Libro {
     private Editorial editorial;
     private int anyoLectura;
     private int anyoAdquisicion;
-    private boolean leido;
 
-    public Libro(int id, String titulo, int numPaginas, Autor autor1, Autor autor2, String genero, String categoria, Editorial editorial, int anyoLectura, int anyoAdquisicion, boolean leido) {
+    public Libro(int id, String titulo, int numPaginas, Autor autor1, Autor autor2, String genero, String categoria, Editorial editorial, int anyoLectura, int anyoAdquisicion) {
         this.id = id;
         this.titulo = titulo;
         this.numPaginas = numPaginas;
@@ -28,13 +26,10 @@ public class Libro {
         this.editorial = editorial;
         this.anyoLectura = anyoLectura;
         this.anyoAdquisicion = anyoAdquisicion;
-        this.leido = leido;
     }
 
     public void mostrarInfoLibro() {
-        // Formato detallado:
-        // ID(3) | Titulo(30) | Pag(4) | Autores(20 cada uno) | Gen/Cat(15) | Ed(15) | Años(4) | Leido(2)
-        String formato = "%-3d | %-80.80s | %4d | %-27.27s | %-20.20s | %-15.15s | %-30.30s | %-30.30s | %4d | %4d | %-3s%n";
+        String formato = "%-3d | %-80.80s | %4d | %-27.27s | %-20.20s | %-15.15s | %-30.30s | %-30.30s | %-8.8s | %4d%n";
 
         System.out.printf(formato,
                 id,
@@ -45,10 +40,23 @@ public class Libro {
                 Utils.distintoNulo(genero),
                 Utils.distintoNulo(categoria),
                 editorial.getGrupoEditorial(),
-                anyoLectura,
-                anyoAdquisicion,
-                Utils.convertirBooleanAString(leido)
+                (anyoLectura == 0 ? "No leído" : anyoLectura),
+                anyoAdquisicion
         );
+    }
+
+    public void mostrarLibro() {
+        System.out.println("\n\tID: " + id);
+        System.out.println("\tTítulo: " + titulo);
+        System.out.println("\tNúmero de páginas: " + numPaginas);
+        System.out.println("\tNombre autor principal: " + nombreCompleto(autor1));
+        if (autor2 != null)
+            System.out.println("\tNombre autor secundario: " + nombreCompleto(autor2));
+        System.out.println("\tGénero: " + Utils.distintoNulo(genero));
+        System.out.println("\tCategoría: " + Utils.distintoNulo(categoria));
+        System.out.println("\tGrupo editorial: " + editorial.getGrupoEditorial());
+        System.out.println("\tAño de lectura: " + (anyoLectura == 0 ? "No leído" : anyoLectura));
+        System.out.println("\tAño de Adquisición: " + anyoAdquisicion);
     }
 
     public static String nombreCompleto(Autor a) {
@@ -68,93 +76,36 @@ public class Libro {
         return Objects.hashCode(titulo);
     }
 
-    public int getId() {
-        return id;
-    }
+    // Getters y Setters
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    public String getTitulo() { return titulo; }
+    public void setTitulo(String titulo) { this.titulo = titulo; }
 
-    public String getTitulo() {
-        return titulo;
-    }
+    public int getNumPaginas() { return numPaginas; }
+    public void setNumPaginas(int numPaginas) { this.numPaginas = numPaginas; }
 
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
-    }
+    public Autor getAutor1() { return autor1; }
+    public void setAutor1(Autor autor1) { this.autor1 = autor1; }
 
-    public int getNumPaginas() {
-        return numPaginas;
-    }
+    public Autor getAutor2() { return autor2; }
+    public void setAutor2(Autor autor2) { this.autor2 = autor2; }
 
-    public void setNumPaginas(int numPaginas) {
-        this.numPaginas = numPaginas;
-    }
+    public String getGenero() { return genero; }
+    public void setGenero(String genero) { this.genero = genero; }
 
-    public Autor getAutor1() {
-        return autor1;
-    }
+    public String getCategoria() { return categoria; }
+    public void setCategoria(String categoria) { this.categoria = categoria; }
 
-    public void setAutor1(Autor autor1) {
-        this.autor1 = autor1;
-    }
+    public Editorial getEditorial() { return editorial; }
+    public void setEditorial(Editorial editorial) { this.editorial = editorial; }
 
-    public Autor getAutor2() {
-        return autor2;
-    }
+    public int getAnyoLectura() { return anyoLectura; }
+    public void setAnyoLectura(int anyoLectura) { this.anyoLectura = anyoLectura; }
 
-    public void setAutor2(Autor autor2) {
-        this.autor2 = autor2;
-    }
-
-    public String getGenero() {
-        return genero;
-    }
-
-    public void setGenero(String genero) {
-        this.genero = genero;
-    }
-
-    public String getCategoria() {
-        return categoria;
-    }
-
-    public void setCategoria(String categoria) {
-        this.categoria = categoria;
-    }
-
-    public Editorial getEditorial() {
-        return editorial;
-    }
-
-    public void setEditorial(Editorial editorial) {
-        this.editorial = editorial;
-    }
-
-    public int getAnyoLectura() {
-        return anyoLectura;
-    }
-
-    public void setAnyoLectura(int anyoLectura) {
-        this.anyoLectura = anyoLectura;
-    }
-
-    public int getAnyoAdquisicion() {
-        return anyoAdquisicion;
-    }
-
-    public void setAnyoAdquisicion(int anyoAdquisicion) {
-        this.anyoAdquisicion = anyoAdquisicion;
-    }
-
-    public boolean isLeido() {
-        return leido;
-    }
-
-    public void setLeido(boolean leido) {
-        this.leido = leido;
-    }
+    public int getAnyoAdquisicion() { return anyoAdquisicion; }
+    public void setAnyoAdquisicion(int anyoAdquisicion) { this.anyoAdquisicion = anyoAdquisicion; }
 
     @Override
     public String toString() {
@@ -169,7 +120,6 @@ public class Libro {
                 ", editorial=" + editorial +
                 ", anyoLectura=" + anyoLectura +
                 ", anyoAdquisicion=" + anyoAdquisicion +
-                ", leido=" + leido +
                 '}';
     }
 }

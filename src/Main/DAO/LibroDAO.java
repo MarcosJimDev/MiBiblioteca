@@ -6,6 +6,7 @@ import java.util.*;
 import Main.Java.*;
 import Main.UI.BibliotecaUI;
 import Main.Utils.Utils;
+import jdk.jshell.execution.Util;
 
 public class LibroDAO {
 
@@ -30,9 +31,10 @@ public class LibroDAO {
                 }
                 Editorial editorial = editoriales.get(idEditorial);
 
+                // Se elimina el rs.getBoolean("Leido") del constructor
                 Libro libro = new Libro(rs.getInt("ID"), rs.getString("Titulo"), rs.getInt("NumPaginas"), autor1,
                         autor2, rs.getString("Genero"), rs.getString("Categoria"), editorial, rs.getInt("Anyo_Lectura"),
-                        rs.getInt("Anyo_Adquisicion"), rs.getBoolean("Leido"));
+                        rs.getInt("Anyo_Adquisicion"));
                 libros.put(libro.getId(), libro);
             }
         } catch (SQLException e) {
@@ -45,7 +47,14 @@ public class LibroDAO {
         System.out.println("\n--- AGREGAR NUEVO LIBRO ---");
 
         System.out.println("Título (obligatorio): ");
-        String titulo = BibliotecaUI.campoObligatorio(sc, "Título (obligatorio): ");
+        String entrada = BibliotecaUI.campoObligatorio(sc, "Título (obligatorio): ");
+        String titulo = Utils.normalizar(entrada);
+        for (Libro l : librosMap.values()) {
+            if (Utils.normalizar(l.getTitulo()).equalsIgnoreCase(titulo)) {
+                System.err.println("ERROR: este libro ya existe en la base de datos.");
+                return;
+            }
+        }
 
         int numPaginas = BibliotecaUI.pedirEntero(sc, "Número de páginas: ");
 
@@ -114,12 +123,10 @@ public class LibroDAO {
         String categoria = BibliotecaUI.pedirCadena(sc, "Categoría: ");
         int anyoAdquisicion = BibliotecaUI.pedirEntero(sc, "Año Adquisición (ej. 2026): ");
         int anyoLectura = BibliotecaUI.pedirEntero(sc, "Año Lectura (0 si no leído): ");
-        boolean leido = BibliotecaUI.pedirBoolean(sc, "¿Ya lo has leído? (s/n): ");
 
-        if (leido && anyoLectura == 0) anyoLectura = anyoAdquisicion;
-        if (!leido) anyoLectura = 0;
-
-        String sqlInsert = "INSERT INTO libros (Titulo, NumPaginas, ID_Autor1, ID_Autor2, Genero, Categoria, ID_Grupo_Editorial, Anyo_Lectura, Anyo_Adquisicion, Leido) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        // Se elimina la lógica que dependía de la variable boolean 'leido'
+        // El SQL ya no incluye la columna Leido ni el décimo parámetro ?
+        String sqlInsert = "INSERT INTO libros (Titulo, NumPaginas, ID_Autor1, ID_Autor2, Genero, Categoria, ID_Grupo_Editorial, Anyo_Lectura, Anyo_Adquisicion) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         int generatedId = -1;
 
         try (Connection con = Conexion.conectar();
@@ -136,7 +143,6 @@ public class LibroDAO {
             ps.setInt(7, idEditorial);
             ps.setInt(8, anyoLectura);
             ps.setInt(9, anyoAdquisicion);
-            ps.setBoolean(10, leido);
 
             int filasAfectadas = ps.executeUpdate();
             if (filasAfectadas > 0) {
@@ -151,12 +157,13 @@ public class LibroDAO {
         }
 
         if (generatedId > 0) {
+            // Se actualiza el constructor de Libro quitando el parámetro boolean
             Libro nuevoLibro = new Libro(
                     generatedId, titulo.trim(), numPaginas,
                     a1Obj, a2Obj,
                     Utils.distintoNulo(genero).trim(),
                     Utils.distintoNulo(categoria).trim(),
-                    edObj, anyoLectura, anyoAdquisicion, leido);
+                    edObj, anyoLectura, anyoAdquisicion);
 
             librosMap.put(generatedId, nuevoLibro);
             System.out.println("¡Libro '" + titulo.trim() + "' añadido correctamente!");
@@ -205,6 +212,54 @@ public class LibroDAO {
 
         } catch (SQLException e) {
             System.err.println("ERROR SQL crítico al intentar eliminar: " + e.getMessage());
+        }
+    }
+
+    public static void actualizarAnyoLectura(HashMap<Integer, Libro> librosMap, Scanner sc) {
+        System.out.println("\n--- MARCAR / EDITAR AÑO DE LECTURA ---");
+
+        // 1. Pedir el ID del libro
+        int idBusqueda = BibliotecaUI.pedirEntero(sc, "Introduce el ID del libro que deseas editar: ");
+
+        // 2. Comprobar si existe en el HashMap
+        if (!librosMap.containsKey(idBusqueda)) {
+            System.err.println("ERROR: No existe ningún libro con el ID " + idBusqueda + " en el sistema.");
+            return;
+        }
+
+        Libro libroAEditar = librosMap.get(idBusqueda);
+        System.out.println("Libro seleccionado: " + libroAEditar.getTitulo());
+        System.out.println("Año de lectura actual: " + (libroAEditar.getAnyoLectura() == 0 ? "No leído" : libroAEditar.getAnyoLectura()));
+
+        // 3. Pedir el nuevo año
+        int nuevoAnyo = BibliotecaUI.pedirEntero(sc, "Introduce el nuevo año de lectura (0 si quieres marcarlo como NO leído): ");
+
+        // 4. Actualizar en la Base de Datos
+        String sql = "UPDATE libros SET Anyo_Lectura = ? WHERE ID = ?";
+
+        try (Connection con = Conexion.conectar();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, nuevoAnyo);
+            ps.setInt(2, idBusqueda);
+
+            int filasAfectadas = ps.executeUpdate();
+
+            if (filasAfectadas > 0) {
+                // 5. Sincronizar con el HashMap (Memoria)
+                libroAEditar.setAnyoLectura(nuevoAnyo);
+                System.out.println("¡Base de datos y biblioteca local actualizadas correctamente!");
+                if (nuevoAnyo > 0) {
+                    System.out.println("Estado actual: Leído en el año " + nuevoAnyo);
+                } else {
+                    System.out.println("Estado actual: Marcado como NO leído.");
+                }
+            } else {
+                System.err.println("ERROR: No se pudo actualizar el registro en la base de datos.");
+            }
+
+        } catch (SQLException e) {
+            System.err.println("ERROR SQL crítico al actualizar el año: " + e.getMessage());
         }
     }
 }

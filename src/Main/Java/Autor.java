@@ -29,6 +29,13 @@ public class Autor {
         );
     }
 
+    public void mostrarAutor() {
+        System.out.println("\n\tID: " + id);
+        System.out.println("\tNombre: " + nombre);
+        System.out.println("\tNacionalidad: " + nacionalidad);
+        System.out.println("\tFecha de nacimiento: " + fechaNacimiento);
+    }
+
     public int getId() {
         return id;
     }

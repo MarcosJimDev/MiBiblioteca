@@ -38,9 +38,6 @@ public class EditorialDAO {
 
         String grupoNormInput = Utils.normalizar(grupo);
 
-        if (grupoNormInput.equalsIgnoreCase("salir"))
-            return;
-
         for (Editorial e : editorialesMap.values()) {
             if (Utils.normalizar(e.getGrupoEditorial()).contains(grupoNormInput)) {
                 System.err.println("ERROR: La editorial '" + grupo + "' ya existe en el sistema.");
@@ -78,9 +75,6 @@ public class EditorialDAO {
 
         String grupoInput = BibliotecaUI.pedirCadena(sc, "Introduce el Grupo Editorial a buscar: ");
         String inputNorm = Utils.normalizar(grupoInput);
-
-        if (inputNorm.equalsIgnoreCase("salir"))
-            return;
 
         List<Editorial> coincidencias = new ArrayList<>();
         for (Editorial e : editorialesMap.values()) {

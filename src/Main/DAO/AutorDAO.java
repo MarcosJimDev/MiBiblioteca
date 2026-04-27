@@ -35,9 +35,6 @@ public class AutorDAO {
         System.out.println("Nombre completo (obligatorio): ");
         String nombre = BibliotecaUI.campoObligatorio(sc, "Nombre completo (obligatorio): ");
 
-        if (nombre.equalsIgnoreCase("salir"))
-            return;
-
         for (Autor a : autoresMap.values()) {
             if (Utils.normalizar(a.getNombre()).contains(Utils.normalizar(nombre))) {
                 System.err.println("ERROR: El autor '" + nombre + "' ya existe (o uno muy similar).");
@@ -78,9 +75,6 @@ public class AutorDAO {
 
         System.out.println("Introduce el nombre completo del autor: ");
         String nombreABuscar = BibliotecaUI.campoObligatorio(sc, "Introduce el nombre completo del autor: ");
-
-        if (nombreABuscar.equalsIgnoreCase("salir"))
-            return;
 
         Autor autorEncontrado = null;
         for (Autor a : autoresMap.values()) {
