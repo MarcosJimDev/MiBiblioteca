@@ -43,10 +43,10 @@ public class BibliotecaUI {
                 System.out.print(mensaje);
                 String entrada = sc.nextLine();
                 numero = Integer.parseInt(entrada);
-                if (numero > 1)
+                if (numero >= 0)
                     valido = true;
             } catch (NumberFormatException e) {
-                System.err.println("ERROR: Debes introducir un número entero válido y mayor a cero.");
+                System.err.println("ERROR: Debes introducir un número entero válido.");
             }
         }
         return numero;
