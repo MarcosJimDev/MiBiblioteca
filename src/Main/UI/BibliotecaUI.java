@@ -1,11 +1,12 @@
-package Main.Java;
+package Main.UI;
+
+import Main.Java.Libro;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.sql.*;
 import java.util.HashMap;
-import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class BibliotecaUI {
@@ -42,9 +43,10 @@ public class BibliotecaUI {
                 System.out.print(mensaje);
                 String entrada = sc.nextLine();
                 numero = Integer.parseInt(entrada);
-                valido = true;
+                if (numero > 1)
+                    valido = true;
             } catch (NumberFormatException e) {
-                System.err.println("ERROR: Debes introducir un número entero válido.");
+                System.err.println("ERROR: Debes introducir un número entero válido y mayor a cero.");
             }
         }
         return numero;

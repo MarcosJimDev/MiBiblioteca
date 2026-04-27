@@ -1,11 +1,15 @@
-package Main.Java;
+package Main.DAO;
 
+import Main.Java.Autor;
+import Main.UI.BibliotecaUI;
+import Main.Java.Conexion;
 import Main.Utils.Utils;
 
 import java.sql.*;
 import java.util.*;
 
 public class AutorDAO {
+
     public static HashMap<Integer, Autor> cargarAutores() {
         HashMap<Integer, Autor> autores = new HashMap<>();
 
@@ -25,16 +29,17 @@ public class AutorDAO {
         return autores;
     }
 
-    public static void agregarNuevoAutor(HashMap<Integer, Autor> autoresMap) {
-        Scanner sc = Utils.declararScaner();
+    public static void agregarNuevoAutor(HashMap<Integer, Autor> autoresMap, Scanner sc) {
         System.out.println("\n--- AGREGAR NUEVO AUTOR ---");
 
-        String nombre = BibliotecaUI.pedirCadena(sc, "Nombre completo (obligatorio): ");
+        String nombre = BibliotecaUI.campoObligatorio(sc, "Nombre completo (obligatorio): ");
 
-        // Verificación básica en el HashMap
+        if (nombre.equalsIgnoreCase("salir"))
+            return;
+
         for (Autor a : autoresMap.values()) {
-            if (a.getNombre().equalsIgnoreCase(nombre)) {
-                System.err.println("ERROR: El autor '" + nombre + "' ya existe en el sistema.");
+            if (Utils.normalizar(a.getNombre()).contains(Utils.normalizar(nombre))) {
+                System.err.println("ERROR: El autor '" + nombre + "' ya existe (o uno muy similar).");
                 return;
             }
         }
@@ -57,7 +62,6 @@ public class AutorDAO {
                 ResultSet rs = ps.getGeneratedKeys();
                 if (rs.next()) {
                     int idGenerado = rs.getInt(1);
-                    // Creamos el objeto y sincronizamos con el HashMap
                     Autor nuevoAutor = new Autor(idGenerado, nombre, nacionalidad, fecha);
                     autoresMap.put(idGenerado, nuevoAutor);
                     System.out.println("¡Autor '" + nombre + "' agregado correctamente con ID: " + idGenerado + "!");
@@ -68,15 +72,17 @@ public class AutorDAO {
         }
     }
 
-    public static void eliminarAutor(HashMap<Integer, Autor> autoresMap) {
-        Scanner sc = Utils.declararScaner();
+    public static void eliminarAutor(HashMap<Integer, Autor> autoresMap, Scanner sc) {
         System.out.println("\n--- ELIMINAR AUTOR ---");
 
-        String nombreABuscar = BibliotecaUI.pedirCadena(sc, "Introduce el nombre completo del autor: ");
+        String nombreABuscar = BibliotecaUI.campoObligatorio(sc, "Introduce el nombre completo del autor: ");
+
+        if (nombreABuscar.equalsIgnoreCase("salir"))
+            return;
 
         Autor autorEncontrado = null;
         for (Autor a : autoresMap.values()) {
-            if (a.getNombre().equalsIgnoreCase(nombreABuscar.trim())) {
+            if (Utils.normalizar(a.getNombre()).contains(Utils.normalizar(nombreABuscar))) {
                 autorEncontrado = a;
                 break;
             }
@@ -98,12 +104,11 @@ public class AutorDAO {
             ps.setInt(1, autorEncontrado.getId());
             ps.executeUpdate();
 
-            // Si llegamos aquí sin excepción, borramos del mapa
             autoresMap.remove(autorEncontrado.getId());
             System.out.println("¡Autor eliminado correctamente!");
 
         } catch (SQLException e) {
-            if (e.getErrorCode() == 1451) { // Código de error de MySQL para restricción de FK
+            if (e.getErrorCode() == 1451) {
                 System.err.println("ERROR: No puedes borrar este autor porque tiene libros asociados en tu biblioteca.");
             } else {
                 System.err.println("ERROR SQL: " + e.getMessage());

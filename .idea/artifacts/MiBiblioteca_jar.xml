@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="MiBiblioteca:jar">
+    <output-path>$PROJECT_DIR$/Programa</output-path>
+    <root id="archive" name="MiBiblioteca.jar">
+      <element id="module-output" name="MiBiblioteca" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/mysql-connector-j-9.6.0/mysql-connector-j-9.6.0/mysql-connector-j-9.6.0.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

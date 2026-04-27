@@ -32,8 +32,23 @@ public class Libro {
     }
 
     public void mostrarInfoLibro() {
-        System.out.println(id + " | " + titulo + " | " + numPaginas + " | " + nombreCompleto(autor1) + " | " + nombreCompleto(autor2) + " | " +
-                genero + " | " + categoria + " | " + editorial.getGrupoEditorial() + " | " + Utils.distintoNulo(editorial.getFirmaEditorial()) + " | " + anyoLectura + " | " + anyoAdquisicion + " | " + Utils.convertirBooleanAString(leido));
+        // Formato detallado:
+        // ID(3) | Titulo(30) | Pag(4) | Autores(20 cada uno) | Gen/Cat(15) | Ed(15) | Años(4) | Leido(2)
+        String formato = "%-3d | %-80.80s | %4d | %-27.27s | %-20.20s | %-15.15s | %-30.30s | %-30.30s | %4d | %4d | %-3s%n";
+
+        System.out.printf(formato,
+                id,
+                titulo,
+                numPaginas,
+                nombreCompleto(autor1),
+                nombreCompleto(autor2),
+                Utils.distintoNulo(genero),
+                Utils.distintoNulo(categoria),
+                editorial.getGrupoEditorial(),
+                anyoLectura,
+                anyoAdquisicion,
+                Utils.convertirBooleanAString(leido)
+        );
     }
 
     public static String nombreCompleto(Autor a) {

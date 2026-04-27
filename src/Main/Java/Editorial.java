@@ -16,7 +16,12 @@ public class Editorial {
     }
 
     public void mostrarInfoEditorial() {
-        System.out.println(id + " | " + grupoEditorial + " | " + Utils.distintoNulo(firmaEditorial));
+        // %-20s para el grupo y %-20s para la firma
+        System.out.printf("%-3d | %-28s | %-20s%n",
+                id,
+                grupoEditorial,
+                Utils.distintoNulo(firmaEditorial)
+        );
     }
 
     @Override

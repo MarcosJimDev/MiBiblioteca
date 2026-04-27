@@ -18,7 +18,15 @@ public class Autor {
     }
 
     public void mostrarInfoAutor() {
-        System.out.println(id + " | " + nombre + " | " + Utils.distintoNulo(nacionalidad) + " | " + Utils.distintoNulo(fechaNacimiento));
+        // %-3d: ID (3 espacios, alineado a la izquierda)
+        // %-25s: Nombre (25 espacios, alineado a la izquierda)
+        // %-15s: Nacionalidad (15 espacios)
+        System.out.printf("%-3d | %-30s | %-15s | %-12s%n",
+                id,
+                nombre,
+                Utils.distintoNulo(nacionalidad),
+                Utils.distintoNulo(fechaNacimiento)
+        );
     }
 
     public int getId() {
