@@ -28,4 +28,12 @@ public class Utils {
         // Quitamos los "garabatos" (acentos) y pasamos a minúsculas
         return normalizado.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "").toLowerCase().trim();
     }
+
+    public static Boolean comprobarSalir(String entrada) {
+        if (entrada != null &&entrada.equalsIgnoreCase("salir")) {
+            System.out.println("Volviendo al menú principal...");
+            return true;
+        }
+        return false;
+    }
 }

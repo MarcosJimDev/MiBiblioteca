@@ -32,8 +32,9 @@ public class AutorDAO {
     public static void agregarNuevoAutor(HashMap<Integer, Autor> autoresMap, Scanner sc) {
         System.out.println("\n--- AGREGAR NUEVO AUTOR ---");
 
-        System.out.println("Nombre completo (obligatorio): ");
-        String nombre = BibliotecaUI.campoObligatorio(sc, "Nombre completo (obligatorio): ");
+        String nombre = BibliotecaUI.campoObligatorio(sc, "Nombre completo (obligatorio): ").trim();
+        if (Utils.comprobarSalir(nombre))
+            return;
 
         for (Autor a : autoresMap.values()) {
             if (Utils.normalizar(a.getNombre()).contains(Utils.normalizar(nombre))) {
@@ -42,8 +43,9 @@ public class AutorDAO {
             }
         }
 
-        String nacionalidad = BibliotecaUI.pedirCadena(sc, "Nacionalidad: ");
-        System.out.println("Fecha de nacimiento (formato YYYY-MM-DD): ");
+        String nacionalidad = BibliotecaUI.pedirCadena(sc, "Nacionalidad: ").trim();
+        if (Utils.comprobarSalir(nacionalidad))
+            return;
         java.sql.Date fecha = BibliotecaUI.dateValido(sc, "Por favor, introduce una fecha válida (YYYY-MM-DD): ");
 
         String sql = "INSERT INTO autores (Nombre, Nacionalidad, Fecha_Nacimiento) VALUES (?, ?, ?)";
@@ -73,8 +75,9 @@ public class AutorDAO {
     public static void eliminarAutor(HashMap<Integer, Autor> autoresMap, Scanner sc) {
         System.out.println("\n--- ELIMINAR AUTOR ---");
 
-        System.out.println("Introduce el nombre completo del autor: ");
-        String nombreABuscar = BibliotecaUI.campoObligatorio(sc, "Introduce el nombre completo del autor: ");
+        String nombreABuscar = BibliotecaUI.campoObligatorio(sc, "Introduce el nombre completo del autor: ").trim();
+        if (Utils.comprobarSalir(nombreABuscar))
+            return;
 
         Autor autorEncontrado = null;
         for (Autor a : autoresMap.values()) {

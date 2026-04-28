@@ -33,10 +33,11 @@ public class EditorialDAO {
     public static void agregarNuevaEditorial(HashMap<Integer, Editorial> editorialesMap, Scanner sc) {
         System.out.println("\n--- AGREGAR NUEVA EDITORIAL ---");
 
-        System.out.println("Nombre del Grupo Editorial (obligatorio): ");
-        String grupo = BibliotecaUI.campoObligatorio(sc, "Nombre del Grupo Editorial (obligatorio): ");
+        String grupo = BibliotecaUI.campoObligatorio(sc, "Nombre del Grupo Editorial (obligatorio): ").trim();
 
         String grupoNormInput = Utils.normalizar(grupo);
+        if (Utils.comprobarSalir(grupo))
+            return;
 
         for (Editorial e : editorialesMap.values()) {
             if (Utils.normalizar(e.getGrupoEditorial()).contains(grupoNormInput)) {
@@ -45,7 +46,9 @@ public class EditorialDAO {
             }
         }
 
-        String firma = BibliotecaUI.pedirCadena(sc, "Firma Editorial: ");
+        String firma = BibliotecaUI.pedirCadena(sc, "Firma Editorial: ").trim();
+        if (Utils.comprobarSalir(firma))
+            return;
 
         String sql = "INSERT INTO editoriales (Grupo_Editorial, Firma_Editorial) VALUES (?, ?)";
 
@@ -73,8 +76,10 @@ public class EditorialDAO {
     public static void eliminarEditorial(HashMap<Integer, Editorial> editorialesMap, Scanner sc) {
         System.out.println("\n--- ELIMINAR EDITORIAL ---");
 
-        String grupoInput = BibliotecaUI.pedirCadena(sc, "Introduce el Grupo Editorial a buscar: ");
+        String grupoInput = BibliotecaUI.pedirCadena(sc, "Introduce el Grupo Editorial a buscar: ").trim();
         String inputNorm = Utils.normalizar(grupoInput);
+        if (Utils.comprobarSalir(inputNorm))
+            return;
 
         List<Editorial> coincidencias = new ArrayList<>();
         for (Editorial e : editorialesMap.values()) {
@@ -91,7 +96,7 @@ public class EditorialDAO {
         Editorial seleccionada;
 
         if (coincidencias.size() == 1) {
-            seleccionada = coincidencias.get(0);
+            seleccionada = coincidencias.getFirst();
         } else {
             System.out.println("Se han encontrado varias editoriales similares:");
             for (int i = 0; i < coincidencias.size(); i++) {

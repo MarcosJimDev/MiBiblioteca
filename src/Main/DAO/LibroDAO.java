@@ -46,9 +46,10 @@ public class LibroDAO {
     public static void agregarNuevoLibro(HashMap<Integer, Libro> librosMap, HashMap<Integer, Autor> autoresMap, HashMap<Integer, Editorial> editorialesMap, Scanner sc) {
         System.out.println("\n--- AGREGAR NUEVO LIBRO ---");
 
-        System.out.println("Título (obligatorio): ");
-        String entrada = BibliotecaUI.campoObligatorio(sc, "Título (obligatorio): ");
+        String entrada = BibliotecaUI.campoObligatorio(sc, "Título (obligatorio): ").trim();
         String titulo = Utils.normalizar(entrada);
+        if (Utils.comprobarSalir(titulo))
+            return;
         for (Libro l : librosMap.values()) {
             if (Utils.normalizar(l.getTitulo()).equalsIgnoreCase(titulo)) {
                 System.err.println("ERROR: este libro ya existe en la base de datos.");
@@ -58,9 +59,10 @@ public class LibroDAO {
 
         int numPaginas = BibliotecaUI.pedirEntero(sc, "Número de páginas: ");
 
-        System.out.println("Nombre Autor Principal (obligatorio): ");
-        String nombreAutor1 = BibliotecaUI.campoObligatorio(sc, "Nombre Autor Principal (obligatorio): ");
+        String nombreAutor1 = BibliotecaUI.campoObligatorio(sc, "Nombre Autor Principal (obligatorio): ").trim();
         String autor1Norm = Utils.normalizar(nombreAutor1);
+        if (Utils.comprobarSalir(autor1Norm))
+            return;
         Autor a1Obj = null;
 
         for (Autor a : autoresMap.values()) {
@@ -76,12 +78,14 @@ public class LibroDAO {
         }
         int idAutor1 = a1Obj.getId();
 
-        String nombreAutor2 = BibliotecaUI.pedirCadena(sc, "Nombre Autor Secundario (Enter si no tiene): ");
+        String nombreAutor2 = BibliotecaUI.pedirCadena(sc, "Nombre Autor Secundario (Enter si no tiene): ").trim();
         Autor a2Obj = null;
         Integer idAutor2Val = null;
 
         if (!nombreAutor2.isEmpty()) {
             String autor2Norm = Utils.normalizar(nombreAutor2);
+            if (Utils.comprobarSalir(autor2Norm))
+                return;
             if (autor2Norm.equals(autor1Norm)) {
                 System.err.println("ERROR: El Autor 2 no puede ser el mismo que el Autor 1.");
                 return;
@@ -101,9 +105,10 @@ public class LibroDAO {
             idAutor2Val = a2Obj.getId();
         }
 
-        System.out.println("Nombre Editorial (obligatorio): ");
-        String nombreEditorial = BibliotecaUI.campoObligatorio(sc, "Nombre Editorial (obligatorio): ");
+        String nombreEditorial = BibliotecaUI.campoObligatorio(sc, "Nombre Editorial (obligatorio): ").trim();
         String editorialNorm = Utils.normalizar(nombreEditorial);
+        if (Utils.comprobarSalir(editorialNorm))
+            return;
         Editorial edObj = null;
 
         for (Editorial e : editorialesMap.values()) {
@@ -119,8 +124,12 @@ public class LibroDAO {
         }
         int idEditorial = edObj.getId();
 
-        String genero = BibliotecaUI.pedirCadena(sc, "Género: ");
-        String categoria = BibliotecaUI.pedirCadena(sc, "Categoría: ");
+        String genero = BibliotecaUI.pedirCadena(sc, "Género: ").trim();
+        if (Utils.comprobarSalir(genero))
+            return;
+        String categoria = BibliotecaUI.pedirCadena(sc, "Categoría: ").trim();
+        if (Utils.comprobarSalir(categoria))
+            return;
         int anyoAdquisicion = BibliotecaUI.pedirEntero(sc, "Año Adquisición (ej. 2026): ");
         int anyoLectura = BibliotecaUI.pedirEntero(sc, "Año Lectura (0 si no leído): ");
 
@@ -173,8 +182,10 @@ public class LibroDAO {
     public static void eliminarLibro(HashMap<Integer, Libro> librosMap, Scanner sc) {
         System.out.println("\n--- ELIMINAR LIBRO ---");
 
-        String tituloABuscar = BibliotecaUI.pedirCadena(sc, "Introduce el título del libro a eliminar: ");
+        String tituloABuscar = BibliotecaUI.pedirCadena(sc, "Introduce el título del libro a eliminar: ").trim();
         String tituloNorm = Utils.normalizar(tituloABuscar);
+        if (Utils.comprobarSalir(tituloNorm))
+            return;
 
         Libro libroEncontrado = null;
         for (Libro l : librosMap.values()) {

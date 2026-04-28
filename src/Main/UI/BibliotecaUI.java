@@ -50,17 +50,17 @@ public class BibliotecaUI {
         int numero = 0;
         boolean valido = false;
 
-        while (!valido) {
+        do {
+            System.out.print(mensaje);
+            String entrada = sc.nextLine();
             try {
-                System.out.print(mensaje);
-                String entrada = sc.nextLine();
                 numero = Integer.parseInt(entrada);
                 if (numero >= 0)
                     valido = true;
             } catch (NumberFormatException e) {
                 System.err.println("ERROR: Debes introducir un número entero válido.");
             }
-        }
+        } while (!valido);
         return numero;
     }
 
@@ -96,11 +96,8 @@ public class BibliotecaUI {
     public static Date dateValido(Scanner sc, String mensaje) {
         Date fecha = null;
         String fechaUsuario;
-        boolean segundaVuelta = false;
         do {
-            if (segundaVuelta) {
-                System.out.println(mensaje);
-            }
+            System.out.println(mensaje);
             fechaUsuario = sc.nextLine();
             try {
                 DateTimeFormatter formateador = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -109,7 +106,6 @@ public class BibliotecaUI {
             } catch (DateTimeParseException e) {
                 System.out.println("Formato inválido.");
             }
-            segundaVuelta = true;
         } while (fechaUsuario.equalsIgnoreCase("") || fecha == null);
 
         return fecha;
@@ -117,6 +113,7 @@ public class BibliotecaUI {
 
     public static String campoObligatorio(Scanner sc, String mensaje) {
         String cadena;
+        System.out.println(mensaje);
         do {
             cadena = sc.nextLine();
             if (cadena.equalsIgnoreCase("")) {
@@ -128,7 +125,6 @@ public class BibliotecaUI {
     }
 
     public static void buscarLibro(HashMap<Integer, Libro> libros, Scanner sc) {
-        System.out.println("Introduce el título del libro: ");
         String busqueda = campoObligatorio(sc, "Introduce el título del libro: ");
         if (busqueda.equalsIgnoreCase("salir")) return;
 
@@ -152,7 +148,6 @@ public class BibliotecaUI {
     }
 
     public static void buscarAutor(HashMap<Integer, Autor> autores, Scanner sc) {
-        System.out.println("Introduce el nombre del autor: ");
         String busqueda = campoObligatorio(sc, "Introduce el nombre del autor: ");
         if (busqueda.equalsIgnoreCase("salir")) return;
 
@@ -176,7 +171,6 @@ public class BibliotecaUI {
     }
 
     public static void buscarEditorial(HashMap<Integer, Editorial> editoriales, Scanner sc) {
-        System.out.println("Introduce el nombre del grupo editorial: ");
         String busqueda = campoObligatorio(sc, "Introduce el nombre del grupo editorial: ");
         if (busqueda.equalsIgnoreCase("salir")) return;
 
@@ -200,7 +194,6 @@ public class BibliotecaUI {
     }
 
     public static void filtrarLibrosPorEditorial(HashMap<Integer, Libro> libros, Scanner sc) {
-        System.out.println("Introduce el nombre del grupo editorial: ");
         String busqueda = campoObligatorio(sc, "Introduce el nombre del grupo editorial: ");
         if (busqueda.equalsIgnoreCase("salir")) return;
 
@@ -225,7 +218,6 @@ public class BibliotecaUI {
     }
 
     public static void filtrarLibrosPorAutor(HashMap<Integer, Libro> libros, Scanner sc) {
-        System.out.println("Introduce el nombre del autor: ");
         String busqueda = campoObligatorio(sc, "Introduce el nombre del autor: ");
         if (busqueda.equalsIgnoreCase("salir")) return;
 
