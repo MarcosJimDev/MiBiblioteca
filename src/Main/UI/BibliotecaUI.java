@@ -1,43 +1,196 @@
 package Main.UI;
 
+import Main.Config.AppInfo;
+import Main.DAO.*;
 import Main.Java.Autor;
-import Main.Java.Libro;
 import Main.Java.Editorial;
+import Main.Java.Libro;
 import Main.Utils.Utils;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class BibliotecaUI {
     public static void mostrarMenu() {
         System.out.println("\nElige una opción: ");
         System.out.println("\t1. Mostrar todos los libros.");
-        System.out.println("\t2. Mostrar todos los autores.");
-        System.out.println("\t3. Mostrar todos las editoriales.");
-        System.out.println("\t4. Agregar nuevo libro.");
-        System.out.println("\t5. Agregar nuevo autor.");
-        System.out.println("\t6. Agregar nueva editorial.");
-        System.out.println("\t7. Eliminar libro.");
-        System.out.println("\t8. Eliminar autor.");
-        System.out.println("\t9. Eliminar editorial.");
-        System.out.println("\t10. Buscar libro.");
-        System.out.println("\t11. Buscar autor.");
-        System.out.println("\t12. Buscar grupo editorial.");
-        System.out.println("\t13. Buscar libro por grupo editorial.");
-        System.out.println("\t14. Buscar libro por autor.");
-        System.out.println("\t15. Actualizar año de lectura (libro).");
+        System.out.println("\t2. Mostrar todos los libros leídos.");
+        System.out.println("\t3. Mostrar todos los autores.");
+        System.out.println("\t4. Mostrar todos las editoriales.");
+        System.out.println("\t5. Menú agregar registros.");
+        System.out.println("\t6. Menú eliminar registros.");
+        System.out.println("\t7. Buscador.");
+        System.out.println("\t8. Actualizar año de lectura.");
+        System.out.println("\t9. Ver estadísticas.");
         System.out.println("\t0. Salir del programa.");
     }
 
     public static void mostrarBienvenida(HashMap<Integer, Libro> libros) {
         System.out.println("*** BIENVENIDO A MIBIBLIOTECA ***");
         System.out.println("Actualmente hay un total de " + libros.size() + " libros.");
+    }
+
+    public static void interaccionMenu(HashMap<Integer, Libro> libros, HashMap<Integer, Autor> autores, HashMap<Integer, Editorial> editoriales, Scanner sc) {
+        String opcion = "";
+        int opcionNum;
+
+        do {
+            opcionNum = -1;
+            BibliotecaUI.mostrarMenu();
+
+            try {
+                opcion = sc.nextLine();
+            } catch (NoSuchElementException e) {
+                System.err.println("ERROR: debes introducir un valor o un comando. " + e);
+            }
+
+            if (opcion.equals("--version")) {
+                System.out.println(AppInfo.getFullVersion());
+            } else if (!opcion.isEmpty() && opcion.length() <= 2) {
+                try {
+                    opcionNum = Integer.parseInt(opcion);
+
+                    switch (opcionNum) {
+                        case 1 ->BibliotecaUI.mostrarLibrosPaginados(libros, sc);
+                        case 2 -> BibliotecaUI.mostrarLibrosPaginadosLeidos(libros, sc);
+                        case 3 -> BibliotecaUI.mostrarAutoresPaginados(autores, sc);
+                        case 4 -> {
+                            System.out.println("\n--- LISTADO DE EDITORIALES ---");
+                            System.out.printf("%-3s | %-28s | %-20s%n",
+                                    "ID", "GRUPO EDITORIAL", "FIRMA EDITORIAL");
+                            System.out.println("-".repeat(53));
+
+                            for (Editorial e : editoriales.values()) {
+                                e.mostrarInfoEditorial();
+                            }
+                        }
+                        case 5 -> Agregar.interactuarMenuAgregar(libros, autores, editoriales, sc);
+                        case 6 -> Eliminar.interactuarMenuEliminar(libros, autores, editoriales, sc);
+                        case 7 -> Buscador.interactuarMenuBuscador(libros, autores, editoriales, sc);
+                        case 8 -> LibroDAO.actualizarAnyoLectura(libros, sc);
+                        case 9 -> Estadisticas.interactuarMenuEstadisticas(libros, autores, editoriales, sc);
+                        case 0 -> System.out.println("Saliendo del programa...");
+                        default -> System.out.println("ERROR: opción no registrada.");
+                    }
+                } catch (NumberFormatException e) {
+                    System.err.println("ERROR: debes introducir un número para elegir una opción. " + e);
+                }
+            } else {
+                System.out.println("ERROR: comando o elemento no registrado.");
+            }
+        } while(opcionNum != 0);
+    }
+
+    public static void mostrarLibrosPaginados(HashMap<Integer, Libro> librosMap, Scanner sc) {
+        List<Libro> listaLibros = new ArrayList<>(librosMap.values());
+        int totalLibros = listaLibros.size();
+        int tamanoPagina = 50;
+        int paginaActual = 0;
+        int totalPaginas = (int) Math.ceil((double) totalLibros / tamanoPagina);
+
+        while (true) {
+            int inicio = paginaActual * tamanoPagina;
+            int fin = Math.min(inicio + tamanoPagina, totalLibros);
+
+            System.out.println("\n" + " ".repeat(100) + "--- LISTADO DE LIBROS (Página " + (paginaActual + 1) + " de " + totalPaginas + ") ---");
+            System.out.printf("%-3s | %-80s | %4s | %-27s | %-20s | %-15s | %-30s | %-30s | %-8s | %4s%n",
+                    "ID", "TÍTULO", "NPAG", "AUTOR 1", "AUTOR 2", "GÉNERO", "CATEGORÍA", "EDITORIAL", "LCT", "ADQ");
+            System.out.println("-".repeat(248));
+
+            for (int i = inicio; i < fin; i++) {
+                listaLibros.get(i).mostrarInfoLibro();
+            }
+
+            System.out.println("\n[S] Siguiente página | [A] Anterior página | [M] Menú Principal");
+            System.out.print("Elige una opción: ");
+            String opcion = sc.nextLine().toUpperCase();
+
+            if (opcion.equals("S") && (paginaActual + 1) < totalPaginas) {
+                paginaActual++;
+            } else if (opcion.equals("A") && paginaActual > 0) {
+                paginaActual--;
+            } else if (opcion.equals("M")) {
+                break;
+            } else {
+                System.out.println("Opción no válida o no hay más páginas.");
+            }
+        }
+    }
+
+    public static void mostrarLibrosPaginadosLeidos(HashMap<Integer, Libro> librosMap, Scanner sc) {
+        List<Libro> listaLibros = new ArrayList<>(librosMap.values());
+        int totalLibros = listaLibros.size();
+        int tamanoPagina = 50;
+        int paginaActual = 0;
+        int totalPaginas = (int) Math.ceil((double) totalLibros / tamanoPagina);
+
+        while (true) {
+            int inicio = paginaActual * tamanoPagina;
+            int fin = Math.min(inicio + tamanoPagina, totalLibros);
+
+            System.out.println("\n" + " ".repeat(100) + "--- LISTADO DE LIBROS (Página " + (paginaActual + 1) + " de " + totalPaginas + ") ---");
+            System.out.printf("%-3s | %-80s | %4s | %-27s | %-20s | %-15s | %-30s | %-30s | %-8s | %4s%n",
+                    "ID", "TÍTULO", "NPAG", "AUTOR 1", "AUTOR 2", "GÉNERO", "CATEGORÍA", "EDITORIAL", "LCT", "ADQ");
+            System.out.println("-".repeat(248));
+
+            for (int i = inicio; i < fin; i++) {
+                if (listaLibros.get(i).getAnyoLectura() > 0)
+                    listaLibros.get(i).mostrarInfoLibro();
+            }
+
+            System.out.println("\n[S] Siguiente página | [A] Anterior página | [M] Menú Principal");
+            System.out.print("Elige una opción: ");
+            String opcion = sc.nextLine().toUpperCase();
+
+            if (opcion.equals("S") && (paginaActual + 1) < totalPaginas) {
+                paginaActual++;
+            } else if (opcion.equals("A") && paginaActual > 0) {
+                paginaActual--;
+            } else if (opcion.equals("M")) {
+                break;
+            } else {
+                System.out.println("Opción no válida o no hay más páginas.");
+            }
+        }
+    }
+
+    public static void mostrarAutoresPaginados(HashMap<Integer, Autor> autoresMap, Scanner sc) {
+        List<Autor> listaAutores = new ArrayList<>(autoresMap.values());
+        int totalLibros = listaAutores.size();
+        int tamanoPagina = 10;
+        int paginaActual = 0;
+        int totalPaginas = (int) Math.ceil((double) totalLibros / tamanoPagina);
+
+        while (true) {
+            int inicio = paginaActual * tamanoPagina;
+            int fin = Math.min(inicio + tamanoPagina, totalLibros);
+
+            System.out.println("\n" + " ".repeat(10) + "--- LISTADO DE LIBROS (Página " + (paginaActual + 1) + " de " + totalPaginas + ") ---");
+            System.out.printf("%-3s | %-30s | %-15s | %-12s%n",
+                    "ID", "NOMBRE COMPLETO", "NACIONALIDAD", "F. NACIM.");
+            System.out.println("-".repeat(68));
+
+            for (int i = inicio; i < fin; i++) {
+                listaAutores.get(i).mostrarInfoAutor();
+            }
+
+            System.out.println("\n[S] Siguiente página | [A] Anterior página | [M] Menú Principal");
+            System.out.print("Elige una opción: ");
+            String opcion = sc.nextLine().toUpperCase();
+
+            if (opcion.equals("S") && (paginaActual + 1) < totalPaginas) {
+                paginaActual++;
+            } else if (opcion.equals("A") && paginaActual > 0) {
+                paginaActual--;
+            } else if (opcion.equals("M")) {
+                break;
+            } else {
+                System.out.println("Opción no válida o no hay más páginas.");
+            }
+        }
     }
 
     public static String pedirCadena(Scanner sc, String mensaje) {
@@ -126,7 +279,7 @@ public class BibliotecaUI {
 
     public static void buscarLibro(HashMap<Integer, Libro> libros, Scanner sc) {
         String busqueda = campoObligatorio(sc, "Introduce el título del libro: ");
-        if (busqueda.equalsIgnoreCase("salir")) return;
+        if (Utils.comprobarSalir(busqueda)) return;
 
         String busquedaNorm = Utils.normalizar(busqueda);
         List<Libro> librosEncontrados = new ArrayList<>();
@@ -140,6 +293,8 @@ public class BibliotecaUI {
         if (librosEncontrados.isEmpty()) {
             System.err.println("ERROR: '" + busqueda + "' no coincide con ningún título.");
         } else {
+            librosEncontrados.sort((l1, l2) -> l1.getTitulo().compareToIgnoreCase(l2.getTitulo()));
+
             System.out.println("Coincidencias: " + librosEncontrados.size());
             for (Libro l : librosEncontrados) {
                 l.mostrarLibro();

@@ -36,4 +36,12 @@ public class Utils {
         }
         return false;
     }
+
+    public static void tiempoMuerto() {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

@@ -46,12 +46,11 @@ public class LibroDAO {
     public static void agregarNuevoLibro(HashMap<Integer, Libro> librosMap, HashMap<Integer, Autor> autoresMap, HashMap<Integer, Editorial> editorialesMap, Scanner sc) {
         System.out.println("\n--- AGREGAR NUEVO LIBRO ---");
 
-        String entrada = BibliotecaUI.campoObligatorio(sc, "Título (obligatorio): ").trim();
-        String titulo = Utils.normalizar(entrada);
+        String titulo = BibliotecaUI.campoObligatorio(sc, "Título (obligatorio): ").trim();
         if (Utils.comprobarSalir(titulo))
             return;
         for (Libro l : librosMap.values()) {
-            if (Utils.normalizar(l.getTitulo()).equalsIgnoreCase(titulo)) {
+            if (Utils.normalizar(l.getTitulo()).equalsIgnoreCase(Utils.normalizar(titulo))) {
                 System.err.println("ERROR: este libro ya existe en la base de datos.");
                 return;
             }
@@ -182,21 +181,27 @@ public class LibroDAO {
     public static void eliminarLibro(HashMap<Integer, Libro> librosMap, Scanner sc) {
         System.out.println("\n--- ELIMINAR LIBRO ---");
 
-        String tituloABuscar = BibliotecaUI.pedirCadena(sc, "Introduce el título del libro a eliminar: ").trim();
-        String tituloNorm = Utils.normalizar(tituloABuscar);
-        if (Utils.comprobarSalir(tituloNorm))
+        String cadena = BibliotecaUI.pedirCadena(sc, "Introduce el ID del libro que deseas eliminar: ");
+        if (Utils.comprobarSalir(cadena))
             return;
+        int idLibro = 0;
+        try {
+            idLibro = Integer.parseInt(cadena);
+        } catch (NumberFormatException e) {
+            System.err.println("ERROR: no has introducido un número válido. " + e);
+            return;
+        }
 
         Libro libroEncontrado = null;
         for (Libro l : librosMap.values()) {
-            if (Utils.normalizar(l.getTitulo()).equals(tituloNorm)) {
+            if (l.getId() == idLibro) {
                 libroEncontrado = l;
                 break;
             }
         }
 
         if (libroEncontrado == null) {
-            System.err.println("ERROR: No se ha encontrado ningún libro similar a '" + tituloABuscar + "'.");
+            System.err.println("ERROR: No se ha encontrado ningún libro con ID " + idLibro + ".");
             return;
         }
 

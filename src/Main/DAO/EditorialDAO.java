@@ -34,13 +34,11 @@ public class EditorialDAO {
         System.out.println("\n--- AGREGAR NUEVA EDITORIAL ---");
 
         String grupo = BibliotecaUI.campoObligatorio(sc, "Nombre del Grupo Editorial (obligatorio): ").trim();
-
-        String grupoNormInput = Utils.normalizar(grupo);
         if (Utils.comprobarSalir(grupo))
             return;
 
         for (Editorial e : editorialesMap.values()) {
-            if (Utils.normalizar(e.getGrupoEditorial()).contains(grupoNormInput)) {
+            if (Utils.normalizar(e.getGrupoEditorial()).contains(Utils.normalizar(grupo))) {
                 System.err.println("ERROR: La editorial '" + grupo + "' ya existe en el sistema.");
                 return;
             }
@@ -73,47 +71,84 @@ public class EditorialDAO {
         }
     }
 
+    public static void agregarNuevaFirma(HashMap<Integer, Editorial> editorialesMap, Scanner sc) {
+        System.out.println("\n--- AGREGAR NUEVA FIRMA EDITORIAL ---");
+
+        String grupo = BibliotecaUI.campoObligatorio(sc, "**BÚSQUEDA**\nNombre del Grupo Editorial (obligatorio): ").trim();
+        if (Utils.comprobarSalir(grupo))
+            return;
+
+        Editorial editorial = null;
+        for (Editorial e : editorialesMap.values()) {
+            if (Utils.normalizar(e.getGrupoEditorial()).contains(Utils.normalizar(grupo))) {
+                editorial = e;
+                break;
+            }
+        }
+
+        if (editorial == null) {
+            System.err.println("ERROR: La editorial '" + grupo + "' no existe en el sistema.");
+            return;
+        }
+
+        String firma = BibliotecaUI.campoObligatorio(sc, "Firma Editorial: ").trim();
+        if (Utils.comprobarSalir(firma))
+            return;
+
+        if (editorial != null) {
+            String sql = "INSERT INTO editoriales (Grupo_Editorial, Firma_Editorial) VALUES (?, ?)";
+
+            try (Connection con = Conexion.conectar();
+                 PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+                ps.setString(1, editorial.getGrupoEditorial());
+                ps.setString(2, firma);
+
+                int filas = ps.executeUpdate();
+                if (filas > 0) {
+                    ResultSet rs = ps.getGeneratedKeys();
+                    if (rs.next()) {
+                        int idGenerado = rs.getInt(1);
+                        Editorial nuevaFirma = new Editorial(idGenerado, editorial.getGrupoEditorial(), firma);
+                        editorialesMap.put(idGenerado, nuevaFirma);
+                        System.out.println("¡La firma '" + grupo + "' agregada con ID: " + idGenerado + "!");
+                    }
+                }
+            } catch (SQLException e) {
+                System.err.println("ERROR SQL al agregar editorial: " + e.getMessage());
+            }
+        }
+    }
+
     public static void eliminarEditorial(HashMap<Integer, Editorial> editorialesMap, Scanner sc) {
         System.out.println("\n--- ELIMINAR EDITORIAL ---");
 
-        String grupoInput = BibliotecaUI.pedirCadena(sc, "Introduce el Grupo Editorial a buscar: ").trim();
-        String inputNorm = Utils.normalizar(grupoInput);
-        if (Utils.comprobarSalir(inputNorm))
+        String busqueda = BibliotecaUI.pedirCadena(sc, "Introduce el ID del Grupo Editorial: ").trim();
+        if (Utils.comprobarSalir(busqueda))
             return;
 
-        List<Editorial> coincidencias = new ArrayList<>();
+        int idEditorial = 0;
+        try {
+            idEditorial = Integer.parseInt(busqueda);
+        } catch (NumberFormatException e) {
+            System.err.println("ERROR: debes introducir un número válido.");
+            return;
+        }
+
+        Editorial coincidencias = null;
         for (Editorial e : editorialesMap.values()) {
-            if (Utils.normalizar(e.getGrupoEditorial()).contains(inputNorm)) {
-                coincidencias.add(e);
+            if (e.getId() == idEditorial) {
+                coincidencias = e;
+                break;
             }
         }
 
-        if (coincidencias.isEmpty()) {
-            System.err.println("No se encontró ninguna editorial que coincida con '" + grupoInput + "'.");
+        if (coincidencias == null) {
+            System.err.println("No se encontró ninguna editorial con ID: " + idEditorial + ".");
             return;
         }
 
-        Editorial seleccionada;
-
-        if (coincidencias.size() == 1) {
-            seleccionada = coincidencias.getFirst();
-        } else {
-            System.out.println("Se han encontrado varias editoriales similares:");
-            for (int i = 0; i < coincidencias.size(); i++) {
-                Editorial temp = coincidencias.get(i);
-                System.out.println((i + 1) + ". " + temp.getGrupoEditorial() + " [" + Utils.distintoNulo(temp.getFirmaEditorial()) + "]");
-            }
-            int eleccion = BibliotecaUI.pedirEntero(sc, "Elige el número de la que quieras borrar: ");
-
-            if (eleccion > 0 && eleccion <= coincidencias.size()) {
-                seleccionada = coincidencias.get(eleccion - 1);
-            } else {
-                System.err.println("Selección inválida.");
-                return;
-            }
-        }
-
-        ejecutarBorradoEditorial(seleccionada, editorialesMap, sc);
+        ejecutarBorradoEditorial(coincidencias, editorialesMap, sc);
     }
 
     private static void ejecutarBorradoEditorial(Editorial ed, HashMap<Integer, Editorial> mapa, Scanner sc) {

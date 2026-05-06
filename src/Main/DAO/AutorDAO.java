@@ -75,20 +75,27 @@ public class AutorDAO {
     public static void eliminarAutor(HashMap<Integer, Autor> autoresMap, Scanner sc) {
         System.out.println("\n--- ELIMINAR AUTOR ---");
 
-        String nombreABuscar = BibliotecaUI.campoObligatorio(sc, "Introduce el nombre completo del autor: ").trim();
-        if (Utils.comprobarSalir(nombreABuscar))
+        String busqueda = BibliotecaUI.campoObligatorio(sc, "Introduce el ID del autor que deseas eliminar: ").trim();
+        if (Utils.comprobarSalir(busqueda))
             return;
+        int idAutor = 0;
+        try {
+            idAutor = Integer.parseInt(busqueda);
+        } catch (NumberFormatException e) {
+            System.err.println("ERROR: debes introducir un número válido.");
+            return;
+        }
 
         Autor autorEncontrado = null;
         for (Autor a : autoresMap.values()) {
-            if (Utils.normalizar(a.getNombre()).contains(Utils.normalizar(nombreABuscar))) {
+            if (a.getId() == idAutor) {
                 autorEncontrado = a;
                 break;
             }
         }
 
         if (autorEncontrado == null) {
-            System.err.println("ERROR: No existe ningún autor llamado '" + nombreABuscar + "'.");
+            System.err.println("ERROR: No existe ningún autor con ID: " + idAutor + ".");
             return;
         }
 
