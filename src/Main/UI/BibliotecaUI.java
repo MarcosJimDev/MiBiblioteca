@@ -397,4 +397,100 @@ public class BibliotecaUI {
             }
         }
     }
+
+    public static void mostrarLibrosPaginadosPorAnyoLectura(HashMap<Integer, Libro> librosMap, Scanner sc) {
+        int tamanoPagina = 50;
+        int paginaActual = 0;
+
+        int busqueda = pedirEntero(sc, "Introduce el año que deseas buscar: ");
+
+        ArrayList<Libro> librosEncontrados = new ArrayList<>();
+        for (Libro l : librosMap.values()) {
+            if (l.getAnyoLectura() == busqueda) {
+                librosEncontrados.add(l);
+            }
+        }
+
+        int totalPaginas = (int) Math.ceil((double) librosEncontrados.size() / tamanoPagina);
+
+        if (!librosEncontrados.isEmpty()) {
+            while (true) {
+                int inicio = paginaActual * tamanoPagina;
+                int fin = Math.min(inicio + tamanoPagina, librosEncontrados.size());
+
+                System.out.println("\n" + " ".repeat(100) + "--- LISTADO DE LIBROS (Página " + (paginaActual + 1) + " de " + totalPaginas + ") ---");
+                System.out.printf("%-3s | %-80s | %4s | %-27s | %-20s | %-15s | %-30s | %-30s | %-8s | %4s%n",
+                        "ID", "TÍTULO", "NPAG", "AUTOR 1", "AUTOR 2", "GÉNERO", "CATEGORÍA", "EDITORIAL", "LCT", "ADQ");
+                System.out.println("-".repeat(248));
+
+                for (int i = inicio; i < fin; i++) {
+                    librosEncontrados.get(i).mostrarInfoLibro();
+                }
+
+                System.out.println("\n[S] Siguiente página | [A] Anterior página | [M] Menú Principal");
+                System.out.print("Elige una opción: ");
+                String opcion = sc.nextLine().toUpperCase();
+
+                if (opcion.equals("S") && (paginaActual + 1) < totalPaginas) {
+                    paginaActual++;
+                } else if (opcion.equals("A") && paginaActual > 0) {
+                    paginaActual--;
+                } else if (opcion.equals("M")) {
+                    break;
+                } else {
+                    System.out.println("Opción no válida o no hay más páginas.");
+                }
+            }
+        } else {
+            System.out.println("No se han obtenido resultados con el año: " + busqueda);
+        }
+    }
+
+    public static void mostrarLibrosPaginadosPorAnyoComprado(HashMap<Integer, Libro> librosMap, Scanner sc) {
+        int tamanoPagina = 50;
+        int paginaActual = 0;
+
+        int busqueda = pedirEntero(sc, "Introduce el año que deseas buscar: ");
+
+        ArrayList<Libro> librosEncontrados = new ArrayList<>();
+        for (Libro l : librosMap.values()) {
+            if (l.getAnyoAdquisicion() == busqueda) {
+                librosEncontrados.add(l);
+            }
+        }
+
+        int totalPaginas = (int) Math.ceil((double) librosEncontrados.size() / tamanoPagina);
+
+        if (!librosEncontrados.isEmpty()) {
+            while (true) {
+                int inicio = paginaActual * tamanoPagina;
+                int fin = Math.min(inicio + tamanoPagina, librosEncontrados.size());
+
+                System.out.println("\n" + " ".repeat(100) + "--- LISTADO DE LIBROS (Página " + (paginaActual + 1) + " de " + totalPaginas + ") ---");
+                System.out.printf("%-3s | %-80s | %4s | %-27s | %-20s | %-15s | %-30s | %-30s | %-8s | %4s%n",
+                        "ID", "TÍTULO", "NPAG", "AUTOR 1", "AUTOR 2", "GÉNERO", "CATEGORÍA", "EDITORIAL", "LCT", "ADQ");
+                System.out.println("-".repeat(248));
+
+                for (int i = inicio; i < fin; i++) {
+                    librosEncontrados.get(i).mostrarInfoLibro();
+                }
+
+                System.out.println("\n[S] Siguiente página | [A] Anterior página | [M] Menú Principal");
+                System.out.print("Elige una opción: ");
+                String opcion = sc.nextLine().toUpperCase();
+
+                if (opcion.equals("S") && (paginaActual + 1) < totalPaginas) {
+                    paginaActual++;
+                } else if (opcion.equals("A") && paginaActual > 0) {
+                    paginaActual--;
+                } else if (opcion.equals("M")) {
+                    break;
+                } else {
+                    System.out.println("Opción no válida o no hay más páginas.");
+                }
+            }
+        } else {
+            System.out.println("No se han obtenido resultados con el año: " + busqueda);
+        }
+    }
 }

@@ -13,7 +13,9 @@ public class Buscador {
         System.out.println("\t3. Buscar grupo editorial.");
         System.out.println("\t4. Buscar libro por grupo editorial.");
         System.out.println("\t5. Buscar libro por autor.");
-        System.out.println("\t6. Volver al menú principal.");
+        System.out.println("\t6. Buscar libro por año de lectura.");
+        System.out.println("\t7. Buscar libro por año de compra.");
+        System.out.println("\t8. Volver al menú principal.");
     }
 
     public static void interactuarMenuBuscador(HashMap<Integer, Libro> libros, HashMap<Integer, Autor> autores, HashMap<Integer, Editorial> editoriales, Scanner sc) {
@@ -29,12 +31,14 @@ public class Buscador {
                 case 3 -> BibliotecaUI.buscarEditorial(editoriales, sc);
                 case 4 -> BibliotecaUI.filtrarLibrosPorEditorial(libros, sc);
                 case 5 -> BibliotecaUI.filtrarLibrosPorAutor(libros, sc);
-                case 6 -> {
+                case 6 -> BibliotecaUI.mostrarLibrosPaginadosPorAnyoLectura(libros, sc);
+                case 7 -> BibliotecaUI.mostrarLibrosPaginadosPorAnyoComprado(libros, sc);
+                case 8 -> {
                     System.out.println("Volviendo al menú principal...");
                     Utils.tiempoMuerto();
                 }
                 default -> System.out.println("ERROR: respuesta desconocida o no registrada.");
             }
-        } while (opcion != 6);
+        } while (opcion != 8);
     }
 }
