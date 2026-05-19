@@ -1,4 +1,4 @@
-package Main.JavaFX;
+package Main;
 
 import Main.DAO.*;
 import Main.Java.*;
