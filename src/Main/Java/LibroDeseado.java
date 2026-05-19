@@ -3,7 +3,7 @@ package Main.Java;
 import Main.Utils.Utils;
 import java.util.Objects;
 
-public class Libro {
+public class LibroDeseado {
     private int id;
     private String titulo;
     private int numPaginas;
@@ -12,10 +12,9 @@ public class Libro {
     private String genero;
     private String categoria;
     private Editorial editorial;
-    private int anyoLectura;
-    private int anyoAdquisicion;
+    private String enlaceCompra;
 
-    public Libro(int id, String titulo, int numPaginas, Autor autor1, Autor autor2, String genero, String categoria, Editorial editorial, int anyoLectura, int anyoAdquisicion) {
+    public LibroDeseado(int id, String titulo, int numPaginas, Autor autor1, Autor autor2, String genero, String categoria, Editorial editorial, String enlaceCompra) {
         this.id = id;
         this.titulo = titulo;
         this.numPaginas = numPaginas;
@@ -24,28 +23,19 @@ public class Libro {
         this.genero = genero;
         this.categoria = categoria;
         this.editorial = editorial;
-        this.anyoLectura = anyoLectura;
-        this.anyoAdquisicion = anyoAdquisicion;
+        this.enlaceCompra = enlaceCompra;
     }
 
-    public void mostrarInfoLibro() {
-        String formato = "%-3d | %-80.80s | %4d | %-27.27s | %-20.20s | %-15.15s | %-30.30s | %-30.30s | %-8.8s | %4d%n";
-
+    public void mostrarInfoLibroDeseado() {
+        String formato = "%-3d | %-80.80s | %4d | %-27.27s | %-20.20s | %-15.15s | %-30.30s | %-30.30s%n";
         System.out.printf(formato,
-                id,
-                titulo,
-                numPaginas,
-                nombreCompleto(autor1),
-                nombreCompleto(autor2),
-                Utils.distintoNulo(genero),
-                Utils.distintoNulo(categoria),
-                editorial != null ? editorial.getGrupoEditorial() : "N/A",
-                (anyoLectura == 0 ? "No leído" : anyoLectura),
-                anyoAdquisicion
-        );
+                id, titulo, numPaginas,
+                nombreCompleto(autor1), nombreCompleto(autor2),
+                Utils.distintoNulo(genero), Utils.distintoNulo(categoria),
+                editorial != null ? editorial.getGrupoEditorial() : "N/A");
     }
 
-    public void mostrarLibro() {
+    public void mostrarLibroDeseado() {
         System.out.println("\n\tID: " + id);
         System.out.println("\tTítulo: " + titulo);
         System.out.println("\tNúmero de páginas: " + numPaginas);
@@ -55,8 +45,7 @@ public class Libro {
         System.out.println("\tGénero: " + Utils.distintoNulo(genero));
         System.out.println("\tCategoría: " + Utils.distintoNulo(categoria));
         System.out.println("\tGrupo editorial: " + (editorial != null ? editorial.getGrupoEditorial() : "N/A"));
-        System.out.println("\tAño de lectura: " + (anyoLectura == 0 ? "No leído" : anyoLectura));
-        System.out.println("\tAño de Adquisición: " + anyoAdquisicion);
+        System.out.println("\tEnlace de compra: " + (enlaceCompra == null || enlaceCompra.isEmpty() ? "N/A" : enlaceCompra));
     }
 
     public static String nombreCompleto(Autor a) {
@@ -67,8 +56,8 @@ public class Libro {
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        Libro libro = (Libro) o;
-        return Objects.equals(titulo, libro.titulo);
+        LibroDeseado that = (LibroDeseado) o;
+        return Objects.equals(titulo, that.titulo);
     }
 
     @Override
@@ -76,7 +65,6 @@ public class Libro {
         return Objects.hashCode(titulo);
     }
 
-    // Getters y Setters
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
@@ -101,15 +89,12 @@ public class Libro {
     public Editorial getEditorial() { return editorial; }
     public void setEditorial(Editorial editorial) { this.editorial = editorial; }
 
-    public int getAnyoLectura() { return anyoLectura; }
-    public void setAnyoLectura(int anyoLectura) { this.anyoLectura = anyoLectura; }
-
-    public int getAnyoAdquisicion() { return anyoAdquisicion; }
-    public void setAnyoAdquisicion(int anyoAdquisicion) { this.anyoAdquisicion = anyoAdquisicion; }
+    public String getEnlaceCompra() { return enlaceCompra; }
+    public void setEnlaceCompra(String enlaceCompra) { this.enlaceCompra = enlaceCompra; }
 
     @Override
     public String toString() {
-        return "Libro{" +
+        return "LibroDeseado{" +
                 "id=" + id +
                 ", titulo='" + titulo + '\'' +
                 ", numPaginas=" + numPaginas +
@@ -118,8 +103,7 @@ public class Libro {
                 ", genero='" + genero + '\'' +
                 ", categoria='" + categoria + '\'' +
                 ", editorial=" + editorial +
-                ", anyoLectura=" + anyoLectura +
-                ", anyoAdquisicion=" + anyoAdquisicion +
+                ", enlaceCompra='" + enlaceCompra + '\'' +
                 '}';
     }
 }

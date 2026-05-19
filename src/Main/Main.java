@@ -11,12 +11,13 @@ public class Main {
         HashMap<Integer, Autor> autores = AutorDAO.cargarAutores();
         HashMap<Integer, Editorial> editoriales = EditorialDAO.cargarEditoriales();
         HashMap<Integer, Libro> libros = LibroDAO.cargarLibros(autores, editoriales);
+        HashMap<Integer, LibroDeseado> librosDeseados = LibroDeseadoDAO.cargarLibrosDeseados(autores, editoriales);
 
         Scanner sc = Utils.declararScanner();
 
-        BibliotecaUI.mostrarBienvenida(libros);
+        BibliotecaUI.mostrarBienvenida(libros, librosDeseados);
 
-        BibliotecaUI.interaccionMenu(libros, autores, editoriales, sc);
+        BibliotecaUI.interaccionMenu(libros, autores, editoriales, librosDeseados, sc);
 
         sc.close();
     }

@@ -5,6 +5,7 @@ import Main.DAO.*;
 import Main.Java.Autor;
 import Main.Java.Editorial;
 import Main.Java.Libro;
+import Main.Java.LibroDeseado;
 import Main.Utils.Utils;
 
 import java.sql.Date;
@@ -28,12 +29,12 @@ public class BibliotecaUI {
         System.out.println("\t0. Salir del programa.");
     }
 
-    public static void mostrarBienvenida(HashMap<Integer, Libro> libros) {
+    public static void mostrarBienvenida(HashMap<Integer, Libro> libros, HashMap<Integer, LibroDeseado> librosDeseados) {
         System.out.println("*** BIENVENIDO A MIBIBLIOTECA ***");
-        System.out.println("Actualmente hay un total de " + libros.size() + " libros.");
+        System.out.println("Actualmente hay un total de " + libros.size() + " libros y " + librosDeseados.size() + " libros deseados.");
     }
 
-    public static void interaccionMenu(HashMap<Integer, Libro> libros, HashMap<Integer, Autor> autores, HashMap<Integer, Editorial> editoriales, Scanner sc) {
+    public static void interaccionMenu(HashMap<Integer, Libro> libros, HashMap<Integer, Autor> autores, HashMap<Integer, Editorial> editoriales, HashMap<Integer, LibroDeseado> librosDeseados, Scanner sc) {
         String opcion = "";
         int opcionNum;
 
@@ -67,8 +68,8 @@ public class BibliotecaUI {
                                 e.mostrarInfoEditorial();
                             }
                         }
-                        case 5 -> Agregar.interactuarMenuAgregar(libros, autores, editoriales, sc);
-                        case 6 -> Eliminar.interactuarMenuEliminar(libros, autores, editoriales, sc);
+                        case 5 -> Agregar.interactuarMenuAgregar(libros, autores, editoriales, librosDeseados, sc);
+                        case 6 -> Eliminar.interactuarMenuEliminar(libros, autores, editoriales, librosDeseados, sc);
                         case 7 -> Buscador.interactuarMenuBuscador(libros, autores, editoriales, sc);
                         case 8 -> LibroDAO.actualizarAnyoLectura(libros, sc);
                         case 9 -> Estadisticas.interactuarMenuEstadisticas(libros, autores, editoriales, sc);

@@ -62,6 +62,13 @@ public class Editorial {
         return firmaEditorial;
     }
 
+    /**
+     * Devuelve el nombre para mostrar: la firma editorial si existe, si no el grupo.
+     */
+    public String getDisplayName() {
+        return (firmaEditorial != null && !firmaEditorial.trim().isEmpty()) ? firmaEditorial : grupoEditorial;
+    }
+
     public void setFirmaEditorial(String firmaEditorial) {
         this.firmaEditorial = firmaEditorial;
     }
