@@ -54,9 +54,9 @@ public class AuthorFormView {
         fechaField.getStyleClass().add("form-field");
         fechaField.setPromptText("YYYY-MM-DD");
 
-        addLabel(grid, "Nombre *:", 0, 0); grid.add(nombreField, 0, 1);
-        addLabel(grid, "Nacionalidad:", 1, 0); grid.add(nacionalidadField, 1, 1);
-        addLabel(grid, "Fecha nacimiento:", 2, 0); grid.add(fechaField, 2, 1);
+        addLabel(grid, "Nombre *:", 0, 0); grid.add(nombreField, 1, 0);
+        addLabel(grid, "Nacionalidad:", 0, 1); grid.add(nacionalidadField, 1, 1);
+        addLabel(grid, "Fecha nacimiento:", 0, 2); grid.add(fechaField, 1, 2);
 
         HBox btnBar = new HBox(10);
         Button guardar = new Button("💾 Guardar autor");
@@ -73,7 +73,7 @@ public class AuthorFormView {
         view.getChildren().addAll(title, mensaje, grid);
     }
 
-    private void addLabel(GridPane grid, String text, int row, int col) {
+    private void addLabel(GridPane grid, String text, int col, int row) {
         Label lbl = new Label(text);
         lbl.getStyleClass().add("form-label");
         grid.add(lbl, col, row);

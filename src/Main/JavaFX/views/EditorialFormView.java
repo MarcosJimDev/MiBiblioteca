@@ -48,8 +48,8 @@ public class EditorialFormView {
         firmaField.setPromptText("Firma / sello (dejar vacío = grupo)");
 
         addLabel(grid, "Grupo Editorial *:", 0, 0);
-        grid.add(grupoField, 0, 1);
-        addLabel(grid, "Firma Editorial:", 1, 0);
+        grid.add(grupoField, 1, 0);
+        addLabel(grid, "Firma Editorial:", 0, 1);
         grid.add(firmaField, 1, 1);
 
         HBox btnBar = new HBox(10);
@@ -72,7 +72,7 @@ public class EditorialFormView {
         view.getChildren().addAll(title, mensaje, grid);
     }
 
-    private void addLabel(GridPane grid, String text, int row, int col) {
+    private void addLabel(GridPane grid, String text, int col, int row) {
         Label lbl = new Label(text);
         lbl.getStyleClass().add("form-label");
         grid.add(lbl, col, row);
