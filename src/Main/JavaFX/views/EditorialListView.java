@@ -47,6 +47,7 @@ public class EditorialListView {
         }
         table.setItems(items);
 
+        VBox.setVgrow(table, Priority.ALWAYS);
         view.getChildren().addAll(title, subtitle, table);
     }
 

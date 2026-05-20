@@ -148,6 +148,7 @@ public class WishlistView {
 
         GridPane formGrid = createAddForm();
 
+        VBox.setVgrow(table, Priority.ALWAYS);
         view.getChildren().addAll(title, table, actionBar, mensaje, sep, addTitle, formGrid);
     }
 

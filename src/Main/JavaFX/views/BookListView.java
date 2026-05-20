@@ -48,6 +48,7 @@ public class BookListView {
         HBox filterBar = createFilterBar();
 
         table = createTable();
+        VBox.setVgrow(table, Priority.ALWAYS);
         allRowsOriginal = FXCollections.observableArrayList();
         loadAllRows();
         filteredRows = FXCollections.observableArrayList(allRowsOriginal);

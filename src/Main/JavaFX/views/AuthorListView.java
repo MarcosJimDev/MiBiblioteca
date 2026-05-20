@@ -71,6 +71,7 @@ public class AuthorListView {
             return row;
         });
 
+        VBox.setVgrow(table, Priority.ALWAYS);
         view.getChildren().addAll(title, subtitle, table);
     }
 
